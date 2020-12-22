@@ -11,8 +11,5 @@ require "./exceptions/*"
 alias ANG = Athena::Negotiation
 
 module Athena::Negotiation
+  class_getter(negotiator) { ANG::Negotiator.new }
 end
-
-# n = ANG::Negotiator.new
-
-# pp n.best "text/html; charset=UTF-8, application/pdf", ["text/html"]

@@ -1,4 +1,13 @@
 abstract class Athena::Negotiation::AbstractNegotiator
+  private record OrderKey, quality : Float32, index : Int32, value : String do
+    include Comparable(self)
+
+    def <=>(other : self) : Int32
+      return @index <=> other.index if @quality == other.quality
+      @quality > other.quality ? -1 : 1
+    end
+  end
+
   private abstract def create_header(header : String) : ANG::BaseAccept
 
   def best(header : String, priorities : Indexable(String), strict : Bool = false) : ANG::BaseAccept?
@@ -28,6 +37,28 @@ abstract class Athena::Negotiation::AbstractNegotiator
     match.nil? ? nil : accepted_priorties[match.index]
   end
 
+  def ordered_elements(header : String) : Array(ANG::BaseAccept)
+    raise ArgumentError.new "The header string should not be empty." if header.blank?
+
+    elements = Array(ANG::BaseAccept).new
+    order_keys = Array(OrderKey).new
+
+    idx = 0
+    self.parse_header(header) do |h|
+      element = self.create_header h
+      elements << element
+      order_keys << OrderKey.new element.quality, idx, element.value
+    rescue ex
+      # skip
+    ensure
+      idx += 1
+    end
+
+    order_keys.sort!.map do |ok|
+      elements[ok.index]
+    end
+  end
+
   protected def match(header : ANG::BaseAccept, priority : ANG::BaseAccept, index : Int32) : ANG::AcceptMatch?
     accept_type = header.type
     priority_type = priority.type
@@ -43,7 +74,7 @@ abstract class Athena::Negotiation::AbstractNegotiator
 
   private def parse_header(header : String, & : String ->) : Nil
     header.scan /(?:[^,\"]*+(?:"[^"]*+\")?)+[^,\"]*+/ do |match|
-      yield match[0] unless match[0].blank?
+      yield match[0].strip unless match[0].blank?
     end
   end
 

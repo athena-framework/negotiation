@@ -7,7 +7,18 @@ struct NegotiatorTest < ASPEC::TestCase
     @negotiator = ANG::Negotiator.new
   end
 
-  def test_exception_handling : Nil
+  def test_best_respects_quality : Nil
+    accept = @negotiator.best "text/html,text/*;q=0.7", {"text/html;q=0.5", "text/plain;q=0.9"}
+    accept = accept.should_not be_nil
+    accept.should be_a ANG::Accept
+    accept.type.should eq "text/plain"
+  end
+
+  def test_best_invalid_unstrict
+    @negotiator.best("/qwer", {"foo/bar"}, false).should be_nil
+  end
+
+  def test_best_exception_handling : Nil
     ex = expect_raises ANG::Exceptions::InvalidMediaType, "Invalid media type: '/qwer'." do
       @negotiator.best "foo/bar", {"/qwer"}
     end
@@ -90,12 +101,37 @@ struct NegotiatorTest < ASPEC::TestCase
       # IE8
       {"image/jpeg, application/x-ms-application, image/gif, application/xaml+xml, image/pjpeg, application/x-ms-xbap, */*", {"text/html", "application/xhtml+xml"}, {"text/html", nil}},
 
-      # wildcards with '+'
+      # wildcards with `+`
       {"application/vnd.api+json", {"application/json", "application/*+json"}, {"application/*+json", nil}},
       {"application/json;q=0.7, application/*+json;q=0.7", {"application/hal+json", "application/problem+json"}, {"application/hal+json", nil}},
       {"application/json;q=0.7, application/problem+*;q=0.7", {"application/hal+xml", "application/problem+xml"}, {"application/problem+xml", nil}},
       {php_pear_header, {"application/*+xml"}, {"application/*+xml", nil}},
       {"application/hal+json", {"application/ld+json", "application/hal+json", "application/xml", "text/xml", "application/json", "text/html"}, {"application/hal+json", nil}},
+    }
+  end
+
+  def test_ordered_elements_exception_handling : Nil
+    expect_raises ArgumentError, "The header string should not be empty." do
+      @negotiator.ordered_elements ""
+    end
+  end
+
+  @[DataProvider("test_ordered_elements_data_provider")]
+  def test_ordered_elements(header : String, expected : Indexable(String)) : Nil
+    elements = @negotiator.ordered_elements header
+
+    expected.each_with_index do |element, idx|
+      elements[idx].should be_a ANG::Accept
+      element.should eq elements[idx].value
+    end
+  end
+
+  def test_ordered_elements_data_provider : Tuple
+    {
+      {"/qwer", [] of String},                                                                                                                                                                    # Invalid
+      {"text/html, text/xml", {"text/html", "text/xml"}},                                                                                                                                         # Ordered as given if no quality modifier
+      {"text/html;q=0.3, text/html;q=0.7", {"text/html;q=0.7", "text/html;q=0.3"}},                                                                                                               # Ordered by quality modifier
+      {"text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5", {"text/html;level=1", "text/html;q=0.7", "*/*;q=0.5", "text/html;level=2;q=0.4", "text/*;q=0.3"}}, # Ordered by quality modifier; one without wins
     }
   end
 end
