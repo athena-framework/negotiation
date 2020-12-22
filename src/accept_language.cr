@@ -10,8 +10,6 @@ struct Athena::Negotiation::AcceptLanguage < Athena::Negotiation::BaseAccept
 
     parts = @value.split '-'
 
-    pp parts
-
     case parts.size
     when 2
       @language = parts[0]

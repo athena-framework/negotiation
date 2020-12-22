@@ -1,9 +1,9 @@
 abstract class Athena::Negotiation::AbstractNegotiator
   private abstract def create_header(header : String) : ANG::BaseAccept
 
-  def best(header : String, priorities : Array(String), strict : Bool = false) : ANG::BaseAccept?
-    raise ArgumentError.new "priorities should not be empty" if priorities.empty?
-    raise ArgumentError.new "The header string should not be empty" if header.blank?
+  def best(header : String, priorities : Indexable(String), strict : Bool = false) : ANG::BaseAccept?
+    raise ArgumentError.new "priorities should not be empty." if priorities.empty?
+    raise ArgumentError.new "The header string should not be empty." if header.blank?
 
     accepted_headers = Array(ANG::BaseAccept).new
 
@@ -17,7 +17,26 @@ abstract class Athena::Negotiation::AbstractNegotiator
 
     matches = self.find_matches accepted_headers, accepted_priorties
 
-    pp matches
+    specific_matches = matches.reduce({} of Int32 => ANG::AcceptMatch) do |matches, match|
+      ANG::AcceptMatch.reduce matches, match
+    end.values
+
+    specific_matches.sort!
+
+    match = specific_matches.shift?
+
+    match.nil? ? nil : accepted_priorties[match.index]
+  end
+
+  protected def match(header : ANG::BaseAccept, priority : ANG::BaseAccept, index : Int32) : ANG::AcceptMatch?
+    accept_type = header.type
+    priority_type = priority.type
+
+    equal = accept_type.downcase == priority_type.downcase
+
+    if equal || accept_type == "*"
+      return ANG::AcceptMatch.new header.quality * priority.quality, 1 * (equal ? 1 : 0), index
+    end
 
     nil
   end
@@ -28,7 +47,7 @@ abstract class Athena::Negotiation::AbstractNegotiator
     end
   end
 
-  private def find_matches(headers : Array(ANG::BaseAccept), priorities : Array(ANG::BaseAccept)) : Array(ANG::AcceptMatch)
+  private def find_matches(headers : Array(ANG::BaseAccept), priorities : Indexable(ANG::BaseAccept)) : Array(ANG::AcceptMatch)
     matches = [] of ANG::AcceptMatch
 
     priorities.each_with_index do |priority, idx|
@@ -40,18 +59,5 @@ abstract class Athena::Negotiation::AbstractNegotiator
     end
 
     matches
-  end
-
-  private def match(header : ANG::BaseAccept, priority : ANG::BaseAccept, index : Int32) : ANG::AcceptMatch?
-    accept_type = header.type
-    priority_type = priority.type
-
-    equal = accept_type.downcase <=> priority_type.downcase
-
-    if !equal.zero? || accept_type == "*"
-      return ANG::AcceptMatch.new header.quality * priority.quality, 1 * equal, index
-    end
-
-    nil
   end
 end
