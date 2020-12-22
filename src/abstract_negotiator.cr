@@ -26,8 +26,8 @@ abstract class Athena::Negotiation::AbstractNegotiator
 
     matches = self.find_matches accepted_headers, accepted_priorties
 
-    specific_matches = matches.reduce({} of Int32 => ANG::AcceptMatch) do |matches, match|
-      ANG::AcceptMatch.reduce matches, match
+    specific_matches = matches.reduce({} of Int32 => ANG::AcceptMatch) do |acc, match|
+      ANG::AcceptMatch.reduce acc, match
     end.values
 
     specific_matches.sort!

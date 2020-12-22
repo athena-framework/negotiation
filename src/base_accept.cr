@@ -29,7 +29,7 @@ abstract struct Athena::Negotiation::BaseAccept
       unless @parameters.empty?
         io << "; "
         # TODO: Do we care the parameters aren't sorted?
-        parameters.join(io, "; ") { |(k, v), io| io << "#{k}=#{v}" }
+        parameters.join(io, "; ") { |(k, v), join_io| join_io << "#{k}=#{v}" }
       end
     end
   end

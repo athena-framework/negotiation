@@ -1,6 +1,9 @@
 require "./abstract_negotiator"
 
 class Athena::Negotiation::Negotiator < Athena::Negotiation::AbstractNegotiator
+  # TODO: Make this method less complex.
+  #
+  # ameba:disable Metrics/CyclomaticComplexity
   protected def match(accept : ANG::Accept, priority : ANG::Accept, index : Int32) : ANG::AcceptMatch?
     accept_base = accept.base_part
     priority_base = priority.base_part

@@ -3,7 +3,7 @@
 [![CI](https://github.com/athena-framework/negotiation/workflows/CI/badge.svg)](https://github.com/athena-framework/negotiation/actions?query=workflow%3ACI)
 [![Latest release](https://img.shields.io/github/release/athena-framework/negotiation.svg)](https://github.com/athena-framework/negotiation/releases)
 
-Framework agnostic content negotiation library.
+Framework agnostic [content negotiation](https://tools.ietf.org/html/rfc7231#section-5.3) library based on [willdurand/Negotiation](https://github.com/willdurand/Negotiation).
 
 ## Installation
 
