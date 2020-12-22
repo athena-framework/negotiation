@@ -1,9 +1,7 @@
 require "./abstract_negotiator"
 
 class Athena::Negotiation::Negotiator < Athena::Negotiation::AbstractNegotiator
-  protected def match(accept : ANG::BaseAccept, priority : ANG::BaseAccept, index : Int32) : ANG::AcceptMatch?
-    return nil if !accept.is_a?(ANG::Accept) || !priority.is_a?(ANG::Accept)
-
+  protected def match(accept : ANG::Accept, priority : ANG::Accept, index : Int32) : ANG::AcceptMatch?
     accept_base = accept.base_part
     priority_base = priority.base_part
 

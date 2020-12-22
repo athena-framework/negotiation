@@ -8,7 +8,7 @@ struct Athena::Negotiation::AcceptLanguage < Athena::Negotiation::BaseAccept
   def initialize(value : String)
     super value
 
-    parts = @value.split '-'
+    parts = @type.split '-'
 
     case parts.size
     when 2

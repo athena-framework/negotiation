@@ -1,6 +1,6 @@
 require "./spec_helper"
 
-struct NegotiatorTest < ASPEC::TestCase
+struct NegotiatorTest < NegotiatorTestCase
   @negotiator : ANG::Negotiator
 
   def initialize
@@ -18,20 +18,12 @@ struct NegotiatorTest < ASPEC::TestCase
     @negotiator.best("/qwer", {"foo/bar"}, false).should be_nil
   end
 
-  def test_best_exception_handling : Nil
+  def test_invalid_media_type : Nil
     ex = expect_raises ANG::Exceptions::InvalidMediaType, "Invalid media type: '/qwer'." do
       @negotiator.best "foo/bar", {"/qwer"}
     end
 
     ex.type.should eq "/qwer"
-
-    expect_raises ArgumentError, "priorities should not be empty." do
-      @negotiator.best "foo/bar", [] of String
-    end
-
-    expect_raises ArgumentError, "The header string should not be empty." do
-      @negotiator.best "", {"text/html"}
-    end
   end
 
   @[DataProvider("best_data_provider")]
