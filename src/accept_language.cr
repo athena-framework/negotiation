@@ -21,7 +21,7 @@ struct Athena::Negotiation::AcceptLanguage < Athena::Negotiation::BaseAccept
       @script = parts[1]
       @region = parts[2]
     else
-      raise "Invalid language: '#{@value}'."
+      raise ANG::Exceptions::InvalidLanguage.new @type
     end
   end
 end

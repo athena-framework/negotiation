@@ -50,8 +50,6 @@ class Athena::Negotiation::Negotiator < Athena::Negotiation::AbstractNegotiator
          (accept_plus == "*" || priority_plus == '*' || plus_equal) &&
          intercection.size == accept.parameters.size
        )
-      # TODO: Calculate intercection between each header's parameters
-
       score = 100 * (base_equal ? 1 : 0) + 10 * (sub_equal ? 1 : 0) + (plus_equal ? 1 : 0) + intercection.size
       return ANG::AcceptMatch.new accept.quality * priority.quality, score, index
     end

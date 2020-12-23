@@ -14,7 +14,7 @@ require "./exceptions/*"
 alias ANG = Athena::Negotiation
 
 module Athena::Negotiation
-  # Returns an `ANG::Negotiation` singleton instance.
+  # Returns an `ANG::Negotiator` singleton instance.
   class_getter(negotiator) { ANG::Negotiator.new }
 
   # Returns an `ANG::CharsetNegotiator` singleton instance.
