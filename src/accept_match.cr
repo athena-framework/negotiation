@@ -1,3 +1,4 @@
+# :nodoc:
 struct Athena::Negotiation::AcceptMatch
   include Comparable(self)
 

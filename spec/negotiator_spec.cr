@@ -11,7 +11,7 @@ struct NegotiatorTest < NegotiatorTestCase
     accept = @negotiator.best "text/html,text/*;q=0.7", {"text/html;q=0.5", "text/plain;q=0.9"}
     accept = accept.should_not be_nil
     accept.should be_a ANG::Accept
-    accept.type.should eq "text/plain"
+    accept.media_range.should eq "text/plain"
   end
 
   def test_best_invalid_unstrict
@@ -23,7 +23,7 @@ struct NegotiatorTest < NegotiatorTestCase
       @negotiator.best "foo/bar", {"/qwer"}
     end
 
-    ex.type.should eq "/qwer"
+    ex.media_range.should eq "/qwer"
   end
 
   @[DataProvider("best_data_provider")]
@@ -46,7 +46,7 @@ struct NegotiatorTest < NegotiatorTestCase
 
     expected = expected.should_not be_nil
 
-    accept_header.type.should eq expected[0]
+    accept_header.media_range.should eq expected[0]
     accept_header.parameters.should eq (expected[1] || Hash(String, String).new)
   end
 
@@ -114,7 +114,7 @@ struct NegotiatorTest < NegotiatorTestCase
 
     expected.each_with_index do |element, idx|
       elements[idx].should be_a ANG::Accept
-      element.should eq elements[idx].value
+      element.should eq elements[idx].header
     end
   end
 

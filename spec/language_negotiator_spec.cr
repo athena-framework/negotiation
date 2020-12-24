@@ -11,7 +11,7 @@ struct LanguageNegotiatorTest < NegotiatorTestCase
     accept = @negotiator.best "en;q=0.5,de", {"de;q=0.3", "en;q=0.9"}
     accept = accept.should_not be_nil
     accept.should be_a ANG::AcceptLanguage
-    accept.type.should eq "en"
+    accept.language.should eq "en"
   end
 
   @[DataProvider("best_data_provider")]
@@ -22,7 +22,7 @@ struct LanguageNegotiatorTest < NegotiatorTestCase
       expected.should be_nil
     else
       accept.should be_a ANG::AcceptLanguage
-      accept.value.should eq expected
+      accept.header.should eq expected
     end
   end
 

@@ -16,21 +16,21 @@ struct CharsetNegotiatorTest < NegotiatorTestCase
 
     accept = accept.should_not be_nil
     accept.should be_a ANG::AcceptCharset
-    accept.value.should eq "fr"
+    accept.charset.should eq "fr"
   end
 
   def test_best_respects_priorities : Nil
     accept = @negotiator.best "foo, bar, yo", {"yo"}
     accept = accept.should_not be_nil
     accept.should be_a ANG::AcceptCharset
-    accept.type.should eq "yo"
+    accept.charset.should eq "yo"
   end
 
   def test_best_respects_quality : Nil
     accept = @negotiator.best "utf-8;q=0.5,iso-8859-1", {"iso-8859-1;q=0.3", "utf-8;q=0.9", "utf-16;q=1.0"}
     accept = accept.should_not be_nil
     accept.should be_a ANG::AcceptCharset
-    accept.type.should eq "utf-8"
+    accept.charset.should eq "utf-8"
   end
 
   @[DataProvider("best_data_provider")]
@@ -41,7 +41,7 @@ struct CharsetNegotiatorTest < NegotiatorTestCase
       expected.should be_nil
     else
       accept.should be_a ANG::AcceptCharset
-      accept.value.should eq expected
+      accept.header.should eq expected
     end
   end
 

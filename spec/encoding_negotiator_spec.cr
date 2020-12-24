@@ -15,7 +15,7 @@ struct EncodingNegotiatorTest < NegotiatorTestCase
     accept = @negotiator.best "gzip;q=0.7,identity", {"identity;q=0.5", "gzip;q=0.9"}
     accept = accept.should_not be_nil
     accept.should be_a ANG::AcceptEncoding
-    accept.type.should eq "gzip"
+    accept.coding.should eq "gzip"
   end
 
   @[DataProvider("best_data_provider")]
@@ -26,7 +26,7 @@ struct EncodingNegotiatorTest < NegotiatorTestCase
       expected.should be_nil
     else
       accept.should be_a ANG::AcceptEncoding
-      accept.value.should eq expected
+      accept.header.should eq expected
     end
   end
 

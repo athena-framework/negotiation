@@ -1,3 +1,4 @@
+# Base negotiator type.  Implements logic common to all negotiators.
 abstract class Athena::Negotiation::AbstractNegotiator
   private record OrderKey, quality : Float32, index : Int32, value : String do
     include Comparable(self)
@@ -10,6 +11,9 @@ abstract class Athena::Negotiation::AbstractNegotiator
 
   private abstract def create_header(header : String) : ANG::BaseAccept
 
+  # Returns the best `ANG::BaseAccept` type based on the provided *header* value and *priorities*.
+  #
+  # See `Athena::Negotiation` for examples.
   def best(header : String, priorities : Indexable(String), strict : Bool = false) : ANG::BaseAccept?
     raise ArgumentError.new "priorities should not be empty." if priorities.empty?
     raise ArgumentError.new "The header string should not be empty." if header.blank?
@@ -37,6 +41,9 @@ abstract class Athena::Negotiation::AbstractNegotiator
     match.nil? ? nil : accepted_priorties[match.index]
   end
 
+  # Returns an array of `ANG::BaseAccept` types that the provided *header* allows, ordered so that the `#best` match is first.
+  #
+  # See `Athena::Negotiation` for examples.
   def ordered_elements(header : String) : Array(ANG::BaseAccept)
     raise ArgumentError.new "The header string should not be empty." if header.blank?
 
@@ -47,7 +54,7 @@ abstract class Athena::Negotiation::AbstractNegotiator
     self.parse_header(header) do |h|
       element = self.create_header h
       elements << element
-      order_keys << OrderKey.new element.quality, idx, element.value
+      order_keys << OrderKey.new element.quality, idx, element.header
     rescue ex
       # skip
     ensure
@@ -60,12 +67,12 @@ abstract class Athena::Negotiation::AbstractNegotiator
   end
 
   protected def match(header : ANG::BaseAccept, priority : ANG::BaseAccept, index : Int32) : ANG::AcceptMatch?
-    accept_type = header.type
-    priority_type = priority.type
+    accept_value = header.accept_value
+    priority_value = priority.accept_value
 
-    equal = accept_type.downcase == priority_type.downcase
+    equal = accept_value.downcase == priority_value.downcase
 
-    if equal || accept_type == "*"
+    if equal || accept_value == "*"
       return ANG::AcceptMatch.new header.quality * priority.quality, 1 * (equal ? 1 : 0), index
     end
 

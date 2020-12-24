@@ -1,5 +1,6 @@
 require "./abstract_negotiator"
 
+# A `ANG::AbstractNegotiator` implementation to negotiate `ANG::AcceptLanguage` headers.
 class Athena::Negotiation::LanguageNegotiator < Athena::Negotiation::AbstractNegotiator
   protected def match(accept : ANG::AcceptLanguage, priority : ANG::AcceptLanguage, index : Int32) : ANG::AcceptMatch?
     accept_base = accept.language

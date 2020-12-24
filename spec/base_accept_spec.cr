@@ -5,12 +5,12 @@ private struct MockAccept < ANG::BaseAccept; end
 struct BaseAcceptTest < ASPEC::TestCase
   @[DataProvider("build_parameters_data_provider")]
   def test_build_parameters_string(header : String, expected : String) : Nil
-    MockAccept.new(header).normalized_value.should eq expected
+    MockAccept.new(header).normalized_header.should eq expected
   end
 
   def build_parameters_data_provider : Tuple
     {
-      {"media/type; xxx = 1.0;level=2;foo=bar", "media/type; xxx=1.0; level=2; foo=bar"},
+      {"media/type; xxx = 1.0;level=2;foo=bar", "media/type; foo=bar; level=2; xxx=1.0"},
     }
   end
 
