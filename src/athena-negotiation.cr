@@ -67,7 +67,7 @@ alias ANG = Athena::Negotiation
 # accept.coding # => "gzip"
 # ```
 #
-# The `ANG::EncodingNegotiator` type returns an `ANG::AcceptEncoding`, or `nil` if negotiating the best character set has failed.
+# The `ANG::EncodingNegotiator` type returns an `ANG::AcceptEncoding`, or `nil` if negotiating the best encoding has failed.
 #
 # ### Language
 #
@@ -84,7 +84,7 @@ alias ANG = Athena::Negotiation
 # accept.script   # => "hans"
 # ```
 #
-# The `ANG::LanguageNegotiator` type returns an `ANG::AcceptLanguage`, or `nil` if negotiating the best character set has failed.
+# The `ANG::LanguageNegotiator` type returns an `ANG::AcceptLanguage`, or `nil` if negotiating the best language has failed.
 module Athena::Negotiation
   # Returns a lazily initialized `ANG::Negotiator` singleton instance.
   class_getter(negotiator) { ANG::Negotiator.new }
