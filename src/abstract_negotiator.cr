@@ -1,5 +1,5 @@
 # Base negotiator type.  Implements logic common to all negotiators.
-abstract class Athena::Negotiation::AbstractNegotiator
+abstract class Athena::Negotiation::AbstractNegotiator(HeaderType)
   private record OrderKey, quality : Float32, index : Int32, value : String do
     include Comparable(self)
 
@@ -9,24 +9,22 @@ abstract class Athena::Negotiation::AbstractNegotiator
     end
   end
 
-  private abstract def create_header(header : String) : ANG::BaseAccept
-
-  # Returns the best `ANG::BaseAccept` type based on the provided *header* value and *priorities*.
+  # Returns the best `HeaderType` type based on the provided *header* value and *priorities*.
   #
   # See `Athena::Negotiation` for examples.
-  def best(header : String, priorities : Indexable(String), strict : Bool = false) : ANG::BaseAccept?
+  def best(header : String, priorities : Indexable(String), strict : Bool = false) : HeaderType?
     raise ArgumentError.new "priorities should not be empty." if priorities.empty?
     raise ArgumentError.new "The header string should not be empty." if header.blank?
 
-    accepted_headers = Array(ANG::BaseAccept).new
+    accepted_headers = Array(HeaderType).new
 
     self.parse_header(header) do |h|
-      accepted_headers << self.create_header h
+      accepted_headers << HeaderType.new h
     rescue ex
       raise ex if strict
     end
 
-    accepted_priorties = priorities.map &->create_header(String)
+    accepted_priorties = priorities.map { |p| HeaderType.new p }
 
     matches = self.find_matches accepted_headers, accepted_priorties
 
@@ -41,18 +39,28 @@ abstract class Athena::Negotiation::AbstractNegotiator
     match.nil? ? nil : accepted_priorties[match.index]
   end
 
-  # Returns an array of `ANG::BaseAccept` types that the provided *header* allows, ordered so that the `#best` match is first.
+  # Returns an array of `HeaderType` types that the provided *header* allows, ordered so that the `#best` match is first.
   #
-  # See `Athena::Negotiation` for examples.
-  def ordered_elements(header : String) : Array(ANG::BaseAccept)
+  # ```
+  # header = "text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5"
+  #
+  # ordered_elements = ANG.negotiator.ordered_elements header
+  #
+  # ordered_elements[0].media_range # => "text/html"
+  # ordered_elements[1].media_range # => "text/html"
+  # ordered_elements[2].media_range # => "*/*"
+  # ordered_elements[3].media_range # => "text/html"
+  # ordered_elements[4].media_range # => "text/*"
+  # ```
+  def ordered_elements(header : String) : Array(HeaderType)
     raise ArgumentError.new "The header string should not be empty." if header.blank?
 
-    elements = Array(ANG::BaseAccept).new
+    elements = Array(HeaderType).new
     order_keys = Array(OrderKey).new
 
     idx = 0
     self.parse_header(header) do |h|
-      element = self.create_header h
+      element = HeaderType.new h
       elements << element
       order_keys << OrderKey.new element.quality, idx, element.header
     rescue ex
@@ -85,7 +93,7 @@ abstract class Athena::Negotiation::AbstractNegotiator
     end
   end
 
-  private def find_matches(headers : Array(ANG::BaseAccept), priorities : Indexable(ANG::BaseAccept)) : Array(ANG::AcceptMatch)
+  private def find_matches(headers : Array(HeaderType), priorities : Indexable(HeaderType)) : Array(ANG::AcceptMatch)
     matches = [] of ANG::AcceptMatch
 
     priorities.each_with_index do |priority, idx|

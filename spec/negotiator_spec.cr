@@ -112,6 +112,8 @@ struct NegotiatorTest < NegotiatorTestCase
   def test_ordered_elements(header : String, expected : Indexable(String)) : Nil
     elements = @negotiator.ordered_elements header
 
+    elements.should be_a Array(ANG::Accept)
+
     expected.each_with_index do |element, idx|
       elements[idx].should be_a ANG::Accept
       element.should eq elements[idx].header
