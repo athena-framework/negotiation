@@ -1,7 +1,7 @@
 require "./abstract_negotiator"
 
 # A `ANG::AbstractNegotiator` implementation to negotiate `ANG::Accept` headers.
-class Athena::Negotiation::Negotiator < Athena::Negotiation::AbstractNegotiator
+class Athena::Negotiation::Negotiator < Athena::Negotiation::AbstractNegotiator(Athena::Negotiation::Accept)
   # TODO: Make this method less complex.
   #
   # ameba:disable Metrics/CyclomaticComplexity
@@ -62,9 +62,5 @@ class Athena::Negotiation::Negotiator < Athena::Negotiation::AbstractNegotiator
     return [sub_type, ""] unless sub_type.includes? '+'
 
     sub_type.split '+', limit: 2
-  end
-
-  private def create_header(header : String) : ANG::BaseAccept
-    ANG::Accept.new header
   end
 end
