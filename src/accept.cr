@@ -5,7 +5,7 @@ require "./base_accept"
 # ```
 # accept = ANG::Accept.new "application/json; q = 0.75; charset = UTF-8"
 #
-# accept.header            # => "application/json; q = 0.9; charset = UTF-8"
+# accept.header            # => "application/json; q = 0.75; charset = UTF-8"
 # accept.normalized_header # => "application/json; charset=UTF-8"
 # accept.parameters        # => {"charset" => "UTF-8"}
 # accept.quality           # => 0.75

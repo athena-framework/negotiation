@@ -19,11 +19,11 @@ struct Athena::Negotiation::AcceptLanguage < Athena::Negotiation::BaseAccept
   getter language : String
 
   # Returns the region, if any, for this `AcceptLanguage` header.
-  # E.x. if the `#language_range` is `zh-Hans-CN`, the language would be `cn`
+  # E.x. if the `#language_range` is `zh-Hans-CN`, the region would be `cn`
   getter region : String? = nil
 
   # Returns the script, if any, for this `AcceptLanguage` header.
-  # E.x. if the `#language_range` is `zh-Hans-CN`, the language would be `hans`
+  # E.x. if the `#language_range` is `zh-Hans-CN`, the script would be `hans`
   getter script : String? = nil
 
   def initialize(value : String)

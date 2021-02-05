@@ -1,7 +1,7 @@
 # Base type for properties/logic all [Accept*](https://tools.ietf.org/html/rfc7231#section-5.3) headers share.
 abstract struct Athena::Negotiation::BaseAccept
   # Returns the full unaltered header `self` represents.
-  # E.x. `text/html` or `unicode-1-1;q=0.8` or `zh-Hans-CN`.
+  # E.x. `text/html`, `unicode-1-1;q=0.8`, or `zh-Hans-CN`.
   getter header : String
 
   # Returns a normalized version of the `#header`, excluding the `#quality` parameter.
