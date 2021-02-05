@@ -5,8 +5,8 @@ require "./base_accept"
 # ```
 # accept = ANG::AcceptEncoding.new "gzip; q = 0.5; key=value"
 #
-# accept.header            # => "gzip-1; q = 0.5; key=value"
-# accept.normalized_header # => "gzip-1; key=value"
+# accept.header            # => "gzip; q = 0.5; key=value"
+# accept.normalized_header # => "gzip; key=value"
 # accept.parameters        # => {"key" => "value"}
 # accept.quality           # => 0.5
 # accept.coding            # => "gzip"

@@ -9,7 +9,7 @@ abstract class Athena::Negotiation::AbstractNegotiator(HeaderType)
     end
   end
 
-  # Returns the best `HeaderType` type based on the provided *header* value and *priorities*.
+  # Returns the best `HeaderType` based on the provided *header* value and *priorities*.
   #
   # If *strict* is `true`, an `ANG::Exceptions::Exception` will be raised if the *header* contains an invalid value, otherwise it is ignored.
   #
@@ -41,7 +41,7 @@ abstract class Athena::Negotiation::AbstractNegotiator(HeaderType)
     match.nil? ? nil : accepted_priorties[match.index]
   end
 
-  # Returns an array of `HeaderType` types that the provided *header* allows, ordered so that the `#best` match is first.
+  # Returns an array of `HeaderType` that the provided *header* allows, ordered so that the `#best` match is first.
   #
   # ```
   # header = "text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5"
