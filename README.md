@@ -13,7 +13,7 @@ Framework agnostic [content negotiation](https://tools.ietf.org/html/rfc7231#sec
 dependencies:
   athena-negotiation:
     github: athena-framework/negotiation
-    version: ~> 1.0.0
+    version: ~> 0.1.0
 ```
 
 2. Run `shards install`
