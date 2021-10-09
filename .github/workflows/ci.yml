@@ -7,4 +7,4 @@ on:
 
 jobs:
   CI:
-    uses: athena-framework/actions/.github/workflows/ci.yml@master
+    uses: athena-framework/actions/.github/workflows/athena.yml@master
