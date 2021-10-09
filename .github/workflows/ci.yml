@@ -1,4 +1,4 @@
-name: CI
+name: Athena
 
 on:
   pull_request: # TODO: Set this back to only master
@@ -7,4 +7,4 @@ on:
 
 jobs:
   CI:
-    uses: athena-framework/actions/.github/workflows/athena.yml@master
+    uses: athena-framework/actions/.github/workflows/ci.yml@master
